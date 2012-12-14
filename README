@@ -1,0 +1,46 @@
+#   Copyright 2010-2012 Opera Software ASA 
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
+The tlscommon module is used to perform the actual probe of a TLS server.
+
+It is imported as a submodule of the tlsprober and tlswebprober repos.
+
+The actual protocol actions require a specially instrumented tlslite 
+implementation, expanded to support TLS 1.1, TLS 1.2 and several other
+TLS features, as well as a large number of special variations of the TLS
+protocol, many of them invalid according to the protocol.
+
+The public API is the class probe_server.ProbeServer, which is initiated with a
+structure that contain the following elements
+
+	server_item.full_servername = "www.example.com:443:HTTPS"
+	server_item.enabled=True
+	server_item.alexa_rating=0
+	server_item.servername= "www.example.com
+	server_item.port= 443
+	server_item.protocol = "HTTPS
+	server_item.id = 0
+  
+(In the implementations for which this was originally developed, this
+structure was defined as a database record, but that is not necessary)
+  
+The test is then initiated using code like this:
+
+	import tlscommon.probe_server
+
+	prober = probe_server.ProbeServer(server_item)
+	prober.Probe(do_full_test=True)
+
+Results can be presented using field by field check of the "prober" members,
+or by printing "prober".
